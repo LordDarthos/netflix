@@ -23,7 +23,7 @@ function Header() {
     }, [])
     
     return ( 
-        <header className={`${isScrolled && "bg-[#141414]"}`}>
+        <header className={`z-50 ${isScrolled && "bg-[#141414]"}`}>
             <div className="flex items-center spacex-2 md:space-x-10">
                 <img 
                 src="https://upload.wikimedia.org/wikipedia/commons/6/67/NewNetflixLogo.png" 
