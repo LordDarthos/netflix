@@ -35,7 +35,7 @@ const Home = ({
         <link rel="icon" href="/favicon.ico"/>
       </Head>
       <Header></Header>
-      <main>
+      <main className='relative pl-4 pb-24 lg:space-y-24 lg:pl-16'>
         <Banner netflixOriginals={netflixOriginals} />
         <section>
           {/* Row */}
@@ -52,12 +52,7 @@ const Home = ({
 export default Home
 
 export const getServerSideProps = async () => {
-  const products = await getProducts(payments, {
-    includePrices: true,
-    activeOnly: true,
-  })
-    .then((res) => res)
-    .catch((error) => console.log(error.message))
+ 
 
   const [
     netflixOriginals,
@@ -88,7 +83,7 @@ export const getServerSideProps = async () => {
       comedyMovies: comedyMovies.results,
       horrorMovies: horrorMovies.results,
       romanceMovies: romanceMovies.results,
-      documentaries: documentaries.results,
-      products,
-    },
+      documentaries: documentaries.results
+    }
   }
+}
