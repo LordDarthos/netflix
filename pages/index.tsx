@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Banner from '../components/Banner'
 import Header from '../components/Header'
 import Row from '../components/Row'
+import useAuth from '../hooks/useAuth'
 import styles from '../styles/Home.module.css'
 import { Movie } from '../typings'
 import requests from '../ults/requests'
@@ -28,7 +29,12 @@ const Home = ({
   romanceMovies,
   documentaries
 }: Props) => {
+  const {logout, loading} = useAuth()
+
+  if(loading) return "Loading"
+  
   return (
+    
     <div className="relative h-screen bg-gradient-to-b lg:h-[140vh]">
       <Head>
         <title>Home - Netflix</title>
@@ -36,6 +42,7 @@ const Home = ({
       </Head>
       <Header></Header>
       <main className='relative pl-4 pb-24 lg:space-y-24 lg:pl-16'>
+        <button onClick={logout} style={{"height" : "300px", "width" : "100px"}}>LOG OUT</button>
         <Banner netflixOriginals={netflixOriginals} />
         <section className="md:space-y-24">
           <Row title="Trending Now" movies={trendingNow} />

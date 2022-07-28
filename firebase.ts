@@ -23,11 +23,11 @@ const app = !getApps().length ? initializeApp(firebaseConfig) : getApp()
 const db = getFirestore()
 const auth = getAuth()
 
-const analytics = getAnalytics(app);
+// const analytics = getAnalytics(app);
 
 export default app
 export { auth, db }
 
-function getAnalytics(app: FirebaseApp) {
-    throw new Error('Function not implemented.')
-}
+// function getAnalytics(app: FirebaseApp) {
+//     throw new Error('Function not implemented.')
+// }
