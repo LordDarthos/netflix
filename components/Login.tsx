@@ -20,7 +20,7 @@ function Login() {
     formState: { errors },
   } = useForm<Inputs>()
 
-  const onSubmit: SubmitHandler<Inputs> = async (data: Inputs) => {
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
     console.log(data)
     if (login) {
       await signIn(data.email, data.password)

@@ -1,15 +1,18 @@
+import { getProducts, Product } from '@stripe/firestore-stripe-payments'
 import Head from 'next/head'
-import Image from 'next/image'
 import { useRecoilValue } from 'recoil'
 import { modalState, movieState } from '../atoms/modalAtoms'
 import Banner from '../components/Banner'
 import Header from '../components/Header'
 import Modal from '../components/Modal'
+import Plans from '../components/Plans'
 import Row from '../components/Row'
 import useAuth from '../hooks/useAuth'
-import styles from '../styles/Home.module.css'
+import useList from '../hooks/useList'
+import useSubscription from '../hooks/useSubscription'
+import payments from '../lib/stripe'
 import { Movie } from '../typings'
-import requests from '../ults/requests'
+import requests from '../utils/requests'
 
 interface Props {
   netflixOriginals: Movie[]
@@ -20,25 +23,30 @@ interface Props {
   horrorMovies: Movie[]
   romanceMovies: Movie[]
   documentaries: Movie[]
+  products: Product[]
 }
 
 const Home = ({
   netflixOriginals,
-  trendingNow,
-  topRated,
   actionMovies,
   comedyMovies,
+  documentaries,
   horrorMovies,
   romanceMovies,
-  documentaries
+  topRated,
+  trendingNow,
+  products,
 }: Props) => {
   const { user, loading } = useAuth()
+  const subscription = useSubscription(user)
   const showModal = useRecoilValue(modalState)
   const movie = useRecoilValue(movieState)
-  
+  const list = useList(user?.uid)
 
-  if(loading) return "Loading"
-  
+  if (loading || subscription === null) return null
+
+  if (!subscription) return <Plans products={products} />
+
   return (
     <div
       className={`relative h-screen bg-gradient-to-b from-gray-900/10 to-[#010511] lg:h-[140vh] ${
@@ -62,7 +70,7 @@ const Home = ({
           <Row title="Top Rated" movies={topRated} />
           <Row title="Action Thrillers" movies={actionMovies} />
           {/* My List */}
-         
+          {list.length > 0 && <Row title="My List" movies={list} />}
 
           <Row title="Comedies" movies={comedyMovies} />
           <Row title="Scary Movies" movies={horrorMovies} />
@@ -78,7 +86,12 @@ const Home = ({
 export default Home
 
 export const getServerSideProps = async () => {
- 
+  const products = await getProducts(payments, {
+    includePrices: true,
+    activeOnly: true,
+  })
+    .then((res) => res)
+    .catch((error) => console.log(error.message))
 
   const [
     netflixOriginals,
@@ -109,7 +122,8 @@ export const getServerSideProps = async () => {
       comedyMovies: comedyMovies.results,
       horrorMovies: horrorMovies.results,
       romanceMovies: romanceMovies.results,
-      documentaries: documentaries.results
-    }
+      documentaries: documentaries.results,
+      products,
+    },
   }
 }
